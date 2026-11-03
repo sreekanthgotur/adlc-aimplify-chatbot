@@ -1,10 +1,10 @@
 # Feature Specification: AIMPLIFY Conversational Idea Intake
 
-**Feature Branch**: `not created`
+**Feature Branch**: `develop`
 
 **Created**: 2026-11-03
 
-**Status**: Draft
+**Status**: Approved (Gate G1 Sign-off)
 
 **Input**: User description: "Replace the static 27-field web form with a multi-modal conversational intake bot for employee ideas."
 
