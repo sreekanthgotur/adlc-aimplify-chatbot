@@ -16,11 +16,11 @@ description: "TDD task list for AIMPLIFY Conversational Idea Intake"
 
 **Purpose**: Establish the backend, frontend, test runners, and CI project layout specified in `plan.md`.
 
-- [ ] T001 Create the backend package, test directories, and `backend/pyproject.toml` for Python 3.11+ managed by uv, with FastAPI, LangGraph, Pydantic, PostgreSQL driver, PyPDF2, python-docx, python-pptx, pytest, and test dependencies declared.
-- [ ] T002 Create the React 19, TypeScript, Vite 6, and Tailwind CSS application skeleton in `frontend/package.json`, `frontend/vite.config.ts`, and `frontend/src/`.
-- [ ] T003 Add PostgreSQL-only local development services and non-secret settings placeholders in `compose.yaml` and `.env.example`; exclude secrets and source-content logging.
-- [ ] T004 Configure backend lint/type-check/test commands in `backend/pyproject.toml` and frontend lint/type-check/test commands in `frontend/package.json`.
-- [ ] T005 Add `.github/workflows/ci.yml` with backend and frontend jobs, blocking merge on failed checks; reserve a required golden-evaluation job to be wired to the Phase 2 harness.
+- [x] T001 Create the backend package, test directories, and `backend/pyproject.toml` for Python 3.11+ managed by uv, with FastAPI, LangGraph, Pydantic, PostgreSQL driver, PyPDF2, python-docx, python-pptx, pytest, and test dependencies declared.
+- [x] T002 Create the React 19, TypeScript, Vite 6, and Tailwind CSS application skeleton in `frontend/package.json`, `frontend/vite.config.ts`, and `frontend/src/`.
+- [x] T003 Add PostgreSQL-only local development services and non-secret settings placeholders in `compose.yaml` and `.env.example`; exclude secrets and source-content logging.
+- [x] T004 Configure backend lint/type-check/test commands in `backend/pyproject.toml` and frontend lint/type-check/test commands in `frontend/package.json`.
+- [x] T005 Add `.github/workflows/ci.yml` with backend and frontend jobs, blocking merge on failed checks; reserve a required golden-evaluation job to be wired to the Phase 2 harness.
 
 ---
 

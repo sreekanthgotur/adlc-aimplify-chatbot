@@ -1,0 +1,10 @@
+node_modules/
+.git/
+.github/
+.specify/
+coverage/
+*.log
+.env
+.env.*
+frontend/
+backend/
