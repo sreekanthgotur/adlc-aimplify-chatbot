@@ -1,11 +1,11 @@
 # Implementation Plan: AIMPLIFY Conversational Idea Intake
 
-**Branch**: `main` | **Date**: 2026-11-03 | **Spec**: [spec.md](./spec.md)
+**Branch**: `develop` | **Date**: 2026-11-03 | **Spec**: [spec.md](./spec.md)
 
 **Input**: Feature specification at `specs/001-conversational-intake/spec.md`
 
-> The specification metadata names `develop` as its feature branch, while the
-> planning command ran on the current checkout `main`. No branch switch was made.
+> The plan metadata follows the feature branch recorded in `spec.md`. The active
+> checkout branch is not changed by this plan.
 
 ## Summary
 
@@ -31,7 +31,8 @@ messages, and transcription text are transient and are not persisted.
 
 **Testing**: pytest for unit, contract, integration, and golden-evaluation tests;
 Vitest and React Testing Library for frontend tests. CI runs at least 50 golden
-cases and blocks merge unless every case passes.
+cases selected by a versioned coverage manifest and blocks merge unless every
+case and required coverage category passes.
 
 **Target Platform**: Linux deployment behind an OIDC-enabled ingress configured
 not to spool request bodies to disk; browser-based desktop and mobile layouts.
@@ -43,14 +44,20 @@ Keep parsing and question generation bounded by upload limits and per-session
 concurrency; establish latency SLOs with deployment measurements before launch.
 
 **Constraints**:
-- Exactly 27 canonical fields in exactly 6 sections; exactly 18 mandatory fields.
-- Declaration Accepted, Date of Submission, and Submitter Signature are human-only.
+- Exactly 27 canonical fields in exactly 6 sections; exactly 18 mandatory fields
+  (15 AI-extractable and 3 human-only declarations).
+- Declaration Accepted, Date of Submission, and Submitter Signature are
+  declaration-only; optional `reviewer_notes` is also human-entry-only.
 - Each clarification turn emits no more than one question for one missing mandatory field.
 - Uploaded and derived file bytes must not reach disk at any layer, including ingress.
 - No PII in application, proxy, WebSocket, or CI logs; cloud identity uses OIDC with
   no static cloud secrets.
 - Candidate values containing unverified numbers, percentages, costs, dates, or
   word-form quantities are dropped before persistence or display.
+- NoFacts is fail-closed: user-provided source text is not an independent
+  verification source. A candidate containing any of those unverified quantities
+  is silently dropped even when the quantity appears in the employee's message,
+  document, or audio transcription.
 
 **Scale/Scope**: One employee-facing intake application, 3 source modalities,
 6 schema sections, 27 canonical fields, 18 mandatory fields, and a CI suite of
@@ -64,13 +71,22 @@ at least 50 golden cases. Peak user/upload volume is not specified.
 |---|---|---|
 | I. Deterministic Safety Gate - NoFacts Pattern | NoFacts runs in ordinary service code on every AI candidate before state update, database write, or client event. Unverifiable quantity-bearing candidates fail closed. | PASS |
 | II. Zero-Disk Ephemeral Ingestion | Raw streamed request bodies are bounded and parsed from memory buffers. No multipart `UploadFile`, temporary file, file-backed cache, or persisted source/transcript is allowed. Ingress must also disable disk buffering. | PASS WITH DEPLOYMENT GATE |
-| III. Canonical Schema and Human-Only Boundaries | Versioned schema registry has 27 fields in 6 sections and exactly 18 mandatory fields. AI candidates for the three human-only fields are rejected by service and persistence constraints. Canonical names and section allocation must be supplied from the authoritative intake schema before seed data is finalized. | PASS WITH SCHEMA INPUT GATE |
+| III. Canonical Schema and Human-Only Boundaries | Versioned registry matches the 27 concrete fields and six section assignments in `data-model.md`, with exactly 18 mandatory fields (15 AI-extractable and 3 declaration-only), exactly 9 optional fields, and non-AI-writable declaration and reviewer-note fields. | PASS |
 | IV. One Clarification Question per Turn | One graph route selects exactly one missing mandatory field and emits its single approved prompt; no missing mandatory fields means no clarification. | PASS |
 | V. Zero-Trust Security and PII Protection | OIDC identity, secure cookie-based WebSocket handshake with Origin validation, no static cloud credentials, and allowlisted non-PII telemetry. | PASS |
 | VI. CI Golden Evaluation Gate | CI requires at least 50 versioned cases and 100% pass rate with no skipped cases. | PASS |
 
-No constitutional violation is proposed. The schema inventory and end-to-end
-no-disk ingress behavior are explicit prerequisites for implementation acceptance.
+No constitutional violation is proposed. The schema inventory is concrete in
+`data-model.md`; end-to-end no-disk ingress behavior remains a release gate.
+
+`backend/tests/golden/golden_manifest.json` MUST require scenario coverage for
+all six canonical sections, every NoFacts category (numbers, dates, costs,
+percentages, and word-form quantities), all three source modalities (chat,
+document, audio), single-question pacing (Principle IV), and human-only
+protection for `declaration_accepted`, `submitter_signature`, and
+`date_of_submission` (Principle III). The golden runner and CI MUST fail if the
+manifest, case set, or execution results omit either pacing or human-only
+coverage or any other required category.
 
 ## Architecture and Failure Modes
 
@@ -110,6 +126,13 @@ balancer/proxy to API, including body buffering, crash dumps, temporary director
 and provider retention behavior. Audio transcription is an adapter boundary; an
 external provider may be used only when its approved configuration provides
 no-retention processing and does not require static cloud secrets.
+
+The ingestion contract MUST be verified by an automated test proving that
+`Request.stream()` feeds `io.BytesIO` directly, and that an OS-level filesystem
+write trap fails on any attempted temporary-file spool or source/derived-byte
+write while exercising PDF, DOCX, PPTX, WAV, MP3, and WebM. The security CI gate MUST
+reject AWS, GCP, or Azure long-lived cloud credentials and validate the configured
+OIDC Workload Identity Federation trust.
 
 ### Turn and persistence flow
 
