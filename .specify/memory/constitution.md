@@ -1,11 +1,3 @@
-<!--
-Sync Impact Report
-Version change: unversioned scaffold -> 1.0.0
-Modified principles: None; this is the initial ratification of the project principles.
-Added sections: Six Core Principles; Additional Constraints; Development Workflow.
-Removed sections: None.
-Follow-up TODOs: None.
--->
 
 # AIMPLIFY Conversational Intake Bot Constitution
 
