@@ -3,6 +3,8 @@ node_modules/
 .github/
 .specify/
 coverage/
+dist/
+build/
 *.log
 .env
 .env.*
