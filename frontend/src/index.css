@@ -80,6 +80,18 @@ h2 { margin-bottom: 0; font-family: Georgia, 'Times New Roman', serif; font-size
 .field-row span { color: var(--muted); text-transform: capitalize; font-size: 10px; }
 .field-row strong { overflow-wrap: anywhere; color: var(--ink); font-size: 12px; font-weight: 600; line-height: 1.5; }
 .empty-state { padding: 19px 0; color: var(--muted); font-size: 12px; line-height: 1.6; }
+.human-declarations { display: grid; gap: 14px; padding: 19px 0; border-top: 1px solid var(--line); }
+.human-declarations-heading .eyebrow { margin-bottom: 6px; }
+.human-declaration-form, .human-notes-form { display: grid; gap: 8px; }
+.declaration-check { display: flex; align-items: flex-start; gap: 9px; color: var(--ink); font-size: 12px; line-height: 1.45; }
+.declaration-check input { flex: 0 0 auto; width: 16px; height: 16px; margin: 0; accent-color: var(--green); }
+.human-field-label { color: var(--muted); font-size: 10px; font-weight: 700; }
+.human-field-input { width: 100%; min-width: 0; padding: 8px 9px; border: 1px solid #cbd6cc; border-radius: 3px; background: white; color: var(--ink); font: inherit; font-size: 12px; }
+.human-field-input:focus-visible { outline: 3px solid #d6aa52; outline-offset: 2px; }
+.human-save-button { justify-self: start; padding: 8px 11px; border: 0; border-radius: 3px; background: var(--green); color: white; cursor: pointer; font-size: 11px; font-weight: 700; }
+.human-save-button.secondary { background: #e4f0e9; color: var(--green); }
+.human-save-button:disabled { opacity: 0.55; cursor: not-allowed; }
+.human-field-error { margin: 0; color: #88402e; font-size: 11px; line-height: 1.5; }
 .section-progress { margin-top: 20px; padding: 14px; border-radius: 5px; background: #eaf1eb; }
 .progress-caption { display: flex; justify-content: space-between; gap: 8px; font-size: 10px; }
 .progress-caption strong { color: var(--green); }

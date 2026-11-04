@@ -7,7 +7,7 @@ from typing import Any
 
 from aimplify_intake.safety.no_facts import mark_no_facts_validated, no_facts_decision
 from aimplify_intake.schema.registry import load_canonical_schema
-from aimplify_intake.schema.validation import validate_field_value
+from aimplify_intake.schema.validation import validate_field_origin, validate_field_value
 
 CandidateExtractor = Callable[[str], dict[str, Any]]
 
@@ -26,11 +26,12 @@ def extract_safe_candidates(
     accepted: list[dict[str, str]] = []
     for field_key, candidate in candidates.items():
         field = fields.get(field_key)
-        if field is None or not field["ai_writable"]:
+        if field is None:
             continue
         if no_facts_decision(candidate) != "pass":
             continue
         try:
+            validate_field_origin(field, "ai_extracted")
             value = validate_field_value(field, candidate)
         except ValueError:
             continue

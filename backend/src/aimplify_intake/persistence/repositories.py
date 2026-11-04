@@ -20,7 +20,11 @@ from aimplify_intake.persistence.models import (
 )
 from aimplify_intake.safety.no_facts import is_no_facts_validated
 from aimplify_intake.schema.registry import load_canonical_schema, publish_schema
-from aimplify_intake.schema.validation import validate_field_value
+from aimplify_intake.schema.validation import (
+    validate_field_origin,
+    validate_field_policy,
+    validate_field_value,
+)
 
 NON_AI_WRITABLE = {"declaration_accepted", "submitter_signature", "date_of_submission", "reviewer_notes"}
 
@@ -111,12 +115,15 @@ def read_field_state(session: Session, submission: IdeaSubmission) -> dict[str, 
             if definition["section_key"] != section["key"]:
                 continue
             value = values.get(definition["key"])
+            validate_field_policy(definition)
             field_state: dict[str, object] = {
                 "field_key": definition["key"],
                 "mandatory": definition["mandatory"],
                 "human_only": not definition["ai_writable"],
             }
-            if value is not None:
+            if value is not None and (
+                definition["ai_writable"] or value.origin == "human_entered"
+            ):
                 field_state.update({"value": value.value, "origin": value.origin})
             fields.append(field_state)
         sections.append({"section_key": section["key"], "fields": fields})
@@ -133,12 +140,13 @@ def persist_ai_values(session: Session, submission: IdeaSubmission, updates: lis
     definitions = {field["key"]: field for field in schema.fields}
     validated = []
     for update in updates:
-        if not is_no_facts_validated(update):
-            raise ValueError("AI candidate has not passed NoFacts validation.")
         field_key = update["field_key"]
         definition = definitions.get(field_key)
-        if definition is None or not definition["ai_writable"] or field_key in NON_AI_WRITABLE:
+        if definition is None or field_key in NON_AI_WRITABLE:
             raise ValueError("Candidate field is not AI-writable.")
+        validate_field_origin(definition, "ai_extracted")
+        if not is_no_facts_validated(update):
+            raise ValueError("AI candidate has not passed NoFacts validation.")
         validated.append((field_key, validate_field_value(definition, update["value"])))
     try:
         for field_key, value in validated:
@@ -165,3 +173,43 @@ def persist_ai_values(session: Session, submission: IdeaSubmission, updates: lis
     except Exception:
         session.rollback()
         raise
+
+
+def persist_human_values(
+    session: Session, submission: IdeaSubmission, updates: dict[str, object]
+) -> dict[str, str]:
+    schema = publish_schema(load_canonical_schema())
+    definitions = {field["key"]: field for field in schema.fields}
+    validated: dict[str, str] = {}
+    for field_key, candidate in updates.items():
+        definition = definitions.get(field_key)
+        if definition is None:
+            raise ValueError("Candidate field is not human-entry-only.")
+        validate_field_origin(definition, "human_entered")
+        validated[field_key] = validate_field_value(definition, candidate)
+    try:
+        for field_key, value in validated.items():
+            current = session.scalar(
+                select(FieldValue).where(
+                    FieldValue.submission_id == submission.submission_id,
+                    FieldValue.field_key == field_key,
+                )
+            )
+            if current is None:
+                session.add(
+                    FieldValue(
+                        submission_id=submission.submission_id,
+                        field_key=field_key,
+                        value=value,
+                        origin="human_entered",
+                    )
+                )
+            else:
+                current.value = value
+                current.origin = "human_entered"
+                current.updated_at = datetime.now(UTC)
+        session.commit()
+    except Exception:
+        session.rollback()
+        raise
+    return validated

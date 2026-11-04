@@ -127,15 +127,15 @@ description: "TDD task list for AIMPLIFY Conversational Idea Intake"
 
 ### RED: Tests for User Story 4
 
-- [ ] T042 [P] [US4] Add failing contract tests for attempts to set or suggest `declaration_accepted`, `submitter_signature`, `date_of_submission`, and human-entry-only `reviewer_notes` through chat, extraction, HTTP, and WebSocket in `backend/tests/contract/api/test_human_only_fields.py`; assert these fields are omitted from AI updates and remain unset.
-- [ ] T043 [P] [US4] Add failing database constraint tests for AI-origin writes to `declaration_accepted`, `submitter_signature`, `date_of_submission`, and human-entry-only `reviewer_notes`, plus valid human-origin writes, in `backend/tests/integration/persistence/test_human_only_fields.py`.
-- [ ] T044 [P] [US4] Add failing frontend tests in `frontend/src/tests/human_declarations.test.tsx` asserting AI responses cannot populate declaration controls and only explicit human input updates them.
+- [X] T042 [P] [US4] Add failing contract tests for attempts to set or suggest `declaration_accepted`, `submitter_signature`, `date_of_submission`, and human-entry-only `reviewer_notes` through chat, extraction, HTTP, and WebSocket in `backend/tests/contract/api/test_human_only_fields.py`; assert these fields are omitted from AI updates and remain unset.
+- [X] T043 [P] [US4] Add failing database constraint tests for AI-origin writes to `declaration_accepted`, `submitter_signature`, `date_of_submission`, and human-entry-only `reviewer_notes`, plus valid human-origin writes, in `backend/tests/integration/persistence/test_human_only_fields.py`.
+- [X] T044 [P] [US4] Add failing frontend tests in `frontend/src/tests/human_declarations.test.tsx` asserting AI responses cannot populate declaration controls and only explicit human input updates them.
 
 ### GREEN: Implementation for User Story 4
 
-- [ ] T045 [US4] Enforce `declaration_only => ai_writable = false` for `declaration_accepted`, `submitter_signature`, and `date_of_submission`, and `fill_mode = "Human only" => ai_writable = false` for `reviewer_notes`, in extraction validation, response serialization, and persistence in `backend/src/aimplify_intake/schema/validation.py` and `backend/src/aimplify_intake/persistence/repositories.py`.
-- [ ] T046 [US4] Add authenticated human-controlled update endpoints for the three declarations and `reviewer_notes`, with contracts in `backend/src/aimplify_intake/api/http.py` and `specs/001-conversational-intake/contracts/intake-http.md`; accept only explicit human-origin values and never route these values through AI extraction.
-- [ ] T047 [US4] Implement separate human-operated declaration controls and the human-entry-only `reviewer_notes` control in `frontend/src/components/HumanDeclarations.tsx`; exclude all four non-AI-writable fields from AI-rendered state and submit values only through human-controlled inputs.
+- [X] T045 [US4] Enforce `declaration_only => ai_writable = false` for `declaration_accepted`, `submitter_signature`, and `date_of_submission`, and `fill_mode = "Human only" => ai_writable = false` for `reviewer_notes`, in extraction validation, response serialization, and persistence in `backend/src/aimplify_intake/schema/validation.py` and `backend/src/aimplify_intake/persistence/repositories.py`.
+- [X] T046 [US4] Add authenticated human-controlled update endpoints for the three declarations and `reviewer_notes`, with contracts in `backend/src/aimplify_intake/api/http.py` and `specs/001-conversational-intake/contracts/intake-http.md`; accept only explicit human-origin values and never route these values through AI extraction.
+- [X] T047 [US4] Implement separate human-operated declaration controls and the human-entry-only `reviewer_notes` control in `frontend/src/components/HumanDeclarations.tsx`; exclude all four non-AI-writable fields from AI-rendered state and submit values only through human-controlled inputs.
 
 **Checkpoint**: All three human-only fields reject AI writes/suggestions and remain available for explicit human completion.
 
