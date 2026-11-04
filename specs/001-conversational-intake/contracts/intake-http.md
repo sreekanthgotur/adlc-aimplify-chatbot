@@ -168,6 +168,26 @@ The response contains exactly six sections and 27 field definitions for the
 selected schema version. Human-only field values can appear only after a human
 has entered them.
 
+### `PUT /api/v1/sessions/{session_id}/fields/{field_key}`
+
+Updates one human-entry-only field. The request requires an authenticated OIDC
+session, authorization for the submission, and an allowed `Origin`. The
+`field_key` must be `declaration_accepted`, `submitter_signature`,
+`date_of_submission`, or `reviewer_notes`; AI-writable fields are rejected.
+
+**Request**
+
+```json
+{
+  "value": "A value validated against the canonical field type"
+}
+```
+
+Boolean declaration values use JSON booleans. Successful updates are persisted
+with `origin: "human_entered"` and return only the updated field key, normalized
+value, and origin. Invalid field values return a generic `422` response. The
+service never routes these values through AI extraction.
+
 ## Status and error codes
 
 | HTTP status | Codes | Meaning |
