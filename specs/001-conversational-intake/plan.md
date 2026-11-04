@@ -128,11 +128,16 @@ external provider may be used only when its approved configuration provides
 no-retention processing and does not require static cloud secrets.
 
 The ingestion contract MUST be verified by an automated test proving that
-`Request.stream()` feeds `io.BytesIO` directly, and that an OS-level filesystem
-write trap fails on any attempted temporary-file spool or source/derived-byte
-write while exercising PDF, DOCX, PPTX, WAV, MP3, and WebM. The security CI gate MUST
-reject AWS, GCP, or Azure long-lived cloud credentials and validate the configured
-OIDC Workload Identity Federation trust.
+`Request.stream()` feeds `io.BytesIO` directly, and that a filesystem write trap
+fails on any attempted temporary-file spool or source/derived-byte write while
+exercising PDF, DOCX, PPTX, WAV, MP3, and WebM. The repository-level contract test
+traces the six API upload paths and traps Python file APIs, `os.open`, and tempfile
+creation; it passes on the current Windows development environment. This does not
+exercise an external ingress process. No reverse proxy or production ingress
+configuration is present, so proxy buffering, temporary storage, and proxy log
+behavior remain release gates. The security CI gate MUST reject AWS, GCP, or Azure
+long-lived cloud credentials and validate the configured OIDC Workload Identity
+Federation trust.
 
 ### Turn and persistence flow
 
@@ -212,6 +217,34 @@ specified Python service and React browser client have independent dependencies
 and test runners. The repository currently contains planning artifacts only; this
 tree is the proposed implementation layout, not a claim that source directories
 already exist.
+
+## Local Validation and Deployment Status
+
+From the repository root, the current CI-equivalent checks are:
+
+```powershell
+uv sync --project backend --all-extras
+uv run --project backend pytest -q
+uv run --project backend python backend/scripts/run_golden_evaluation.py
+npm ci --prefix frontend
+npm run test --prefix frontend -- --run
+npm run typecheck --prefix frontend
+npm run build --prefix frontend
+```
+
+The API defaults to a 20 MiB upload cap, configurable with `MAX_UPLOAD_BYTES`;
+the checked-in `.env.example` sets `20971520`. Uploaded and derived source bytes
+and transcripts are transient and are not persisted. Accepted structured values
+are persisted, but no accepted-data retention duration or deletion policy is
+configured; production release requires an approved duration and implemented
+deletion/backup-expiration controls.
+
+The golden runner currently validates manifest coverage and result bookkeeping
+for 50 metadata-only case records; its script marks those records passed without
+executing model inference. Unit, contract, and integration tests provide the
+executable behavior checks in this checkout. The API-to-parser no-disk path is
+covered, but end-to-end ingress/proxy behavior and logs are not verified because
+no proxy deployment is included. See [the ingress release gate](../../deploy/ingress/README.md).
 
 ## Complexity Tracking
 
