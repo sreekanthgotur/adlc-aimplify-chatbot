@@ -1,0 +1,6 @@
+{
+  "provider": "github-actions-oidc",
+  "issuer": "https://token.actions.githubusercontent.com",
+  "audience": "aimplify-intake-ci"
+}
+

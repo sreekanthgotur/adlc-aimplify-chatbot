@@ -1,0 +1,34 @@
+{
+  "version": "1.0.0",
+  "minimum_cases": 50,
+  "required_coverage": {
+    "sections": [
+      "section_01",
+      "section_02",
+      "section_03",
+      "section_04",
+      "section_05",
+      "section_06"
+    ],
+    "no_facts_categories": [
+      "number",
+      "date",
+      "cost",
+      "percentage",
+      "word_quantity"
+    ],
+    "modalities": [
+      "chat",
+      "document",
+      "audio"
+    ],
+    "single_question_pacing": true,
+    "human_only_protection": true,
+    "human_only_fields": [
+      "declaration_accepted",
+      "submitter_signature",
+      "date_of_submission"
+    ]
+  }
+}
+
