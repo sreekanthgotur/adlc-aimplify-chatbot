@@ -18,6 +18,7 @@ from aimplify_intake.persistence.models import (
     IntakeSection,
     SchemaVersion,
 )
+from aimplify_intake.safety.no_facts import is_no_facts_validated
 from aimplify_intake.schema.registry import load_canonical_schema, publish_schema
 from aimplify_intake.schema.validation import validate_field_value
 
@@ -132,6 +133,8 @@ def persist_ai_values(session: Session, submission: IdeaSubmission, updates: lis
     definitions = {field["key"]: field for field in schema.fields}
     validated = []
     for update in updates:
+        if not is_no_facts_validated(update):
+            raise ValueError("AI candidate has not passed NoFacts validation.")
         field_key = update["field_key"]
         definition = definitions.get(field_key)
         if definition is None or not definition["ai_writable"] or field_key in NON_AI_WRITABLE:

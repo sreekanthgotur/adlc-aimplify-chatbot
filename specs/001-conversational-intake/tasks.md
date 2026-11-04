@@ -85,13 +85,13 @@ description: "TDD task list for AIMPLIFY Conversational Idea Intake"
 
 ### RED: Tests for User Story 2
 
-- [ ] T032 [P] [US2] Add failing integration tests sending each NoFacts adversarial category through chat, document extraction, audio transcription, HTTP, and WebSocket paths in `backend/tests/integration/test_no_facts_boundaries.py`; assert rejected candidates are absent from persistence and events.
-- [ ] T033 [P] [US2] Add failing property-based tests for nested candidate values and normalized punctuation/currency/date forms in `backend/tests/unit/safety/test_no_facts_properties.py`; assert deterministic whole-candidate drop behavior.
+- [X] T032 [P] [US2] Add failing integration tests sending each NoFacts adversarial category through chat, document extraction, audio transcription, HTTP, and WebSocket paths in `backend/tests/integration/test_no_facts_boundaries.py`; assert rejected candidates are absent from persistence and events.
+- [X] T033 [P] [US2] Add failing property-based tests for nested candidate values and normalized punctuation/currency/date forms in `backend/tests/unit/safety/test_no_facts_properties.py`; assert deterministic whole-candidate drop behavior.
 
 ### GREEN: Implementation for User Story 2
 
-- [ ] T034 [US2] Integrate the foundational NoFacts decision into every extraction result path in `backend/src/aimplify_intake/services/extraction.py`; ensure state is mutated only with passed candidates and drop outcomes reveal no rejected value.
-- [ ] T035 [US2] Add a persistence-boundary guard that rejects any AI candidate not marked as NoFacts-validated in `backend/src/aimplify_intake/persistence/repositories.py`; ensure client serializers in `backend/src/aimplify_intake/api/serializers.py` receive only committed safe values.
+- [X] T034 [US2] Integrate the foundational NoFacts decision into every extraction result path in `backend/src/aimplify_intake/services/extraction.py`; ensure state is mutated only with passed candidates and drop outcomes reveal no rejected value.
+- [X] T035 [US2] Add a persistence-boundary guard that rejects any AI candidate not marked as NoFacts-validated in `backend/src/aimplify_intake/persistence/repositories.py`; ensure client serializers in `backend/src/aimplify_intake/api/serializers.py` receive only committed safe values.
 
 **Checkpoint**: All evaluated unverified quantity forms are dropped consistently across every supported input and output path.
 
