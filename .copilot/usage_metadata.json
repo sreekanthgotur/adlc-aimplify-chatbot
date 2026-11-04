@@ -22,6 +22,16 @@
       ],
       "firstSeen": "2026-11-04 15:50:41.999",
       "lastSeen": "2026-11-04 16:06:27.887"
+    },
+    {
+      "chatId": "05dbf5b4-fe9f-4f27-a116-854e58d02493",
+      "title": "Speckit Phase 5 implementation",
+      "titleSource": "copilot",
+      "turnIds": [
+        "request_ec3d9619-bb8b-4459-a0d0-ef709b1d3550"
+      ],
+      "firstSeen": "2026-11-04 16:32:16.203",
+      "lastSeen": "2026-11-04 16:54:16.244"
     }
   ]
 }

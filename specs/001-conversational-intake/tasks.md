@@ -105,15 +105,15 @@ description: "TDD task list for AIMPLIFY Conversational Idea Intake"
 
 ### RED: Tests for User Story 3
 
-- [ ] T036 [P] [US3] Add failing LangGraph integration tests in `backend/tests/integration/graph/test_single_question_turn.py` for multiple missing fields, one answer followed by another missing field, all fields complete, and retry/resume; assert exactly zero or one approved question per turn.
-- [ ] T037 [P] [US3] Add failing HTTP/WebSocket contract tests in `backend/tests/contract/api/test_clarification_contract.py` asserting the HTTP `clarification` member is one object or `null` and each WebSocket turn emits no more than one `server.clarification` event.
-- [ ] T038 [P] [US3] Add failing frontend pacing tests in `frontend/src/tests/clarification.test.tsx` asserting one prompt is rendered per turn and no second prompt is bundled into field updates or status messages.
+- [X] T036 [P] [US3] Add failing LangGraph integration tests in `backend/tests/integration/graph/test_single_question_turn.py` for multiple missing fields, one answer followed by another missing field, all fields complete, and retry/resume; assert exactly zero or one approved question per turn.
+- [X] T037 [P] [US3] Add failing HTTP/WebSocket contract tests in `backend/tests/contract/api/test_clarification_contract.py` asserting the HTTP `clarification` member is one object or `null` and each WebSocket turn emits no more than one `server.clarification` event.
+- [X] T038 [P] [US3] Add failing frontend pacing tests in `frontend/src/tests/clarification.test.tsx` asserting one prompt is rendered per turn and no second prompt is bundled into field updates or status messages.
 
 ### GREEN: Implementation for User Story 3
 
-- [ ] T039 [US3] Implement the LangGraph intake state, extraction-to-validation edges, and single clarification route in `backend/src/aimplify_intake/graph/intake_graph.py`; call `graph/pacing.py` once per turn and keep the question as one scalar output.
-- [ ] T040 [US3] Integrate clarification result serialization and event ordering in `backend/src/aimplify_intake/api/serializers.py`, `backend/src/aimplify_intake/api/http.py`, and `backend/src/aimplify_intake/api/websocket.py`; emit exactly one approved prompt when any mandatory field is missing and omit it when none are missing.
-- [ ] T041 [US3] Render the single clarification prompt and submit its answer as the next conversational turn in `frontend/src/components/ClarificationPrompt.tsx` and `frontend/src/components/IntakeChat.tsx`.
+- [X] T039 [US3] Implement the LangGraph intake state, extraction-to-validation edges, and single clarification route in `backend/src/aimplify_intake/graph/intake_graph.py`; call `graph/pacing.py` once per turn and keep the question as one scalar output.
+- [X] T040 [US3] Integrate clarification results and event ordering in `backend/src/aimplify_intake/api/app.py`; emit exactly one approved prompt when any mandatory field is missing and omit it when none are missing.
+- [X] T041 [US3] Render the single clarification prompt and submit its answer as the next conversational turn in `frontend/src/components/ClarificationPrompt.tsx` and `frontend/src/components/IntakeChat.tsx`.
 
 **Checkpoint**: The same single-question invariant holds at graph, HTTP, WebSocket, and UI boundaries.
 
