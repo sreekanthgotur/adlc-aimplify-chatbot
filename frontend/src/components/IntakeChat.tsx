@@ -1,5 +1,6 @@
 import { FormEvent, useState } from 'react';
 import { IntakeResult } from '../services/intake';
+import { ClarificationPrompt } from './ClarificationPrompt';
 
 type Props = {
   disabled: boolean;
@@ -8,7 +9,7 @@ type Props = {
 
 export function IntakeChat({ disabled, onSend }: Props) {
   const [text, setText] = useState('');
-  const [turns, setTurns] = useState<Array<{ role: 'you' | 'intake'; text: string }>>([]);
+  const [turns, setTurns] = useState<Array<{ role: 'you' | 'intake'; text: string; clarification?: boolean }>>([]);
   const [busy, setBusy] = useState(false);
 
   async function submit(event: FormEvent<HTMLFormElement>) {
@@ -22,7 +23,11 @@ export function IntakeChat({ disabled, onSend }: Props) {
       const result = await onSend(message);
       const updates = result.field_updates.map((update) => update.value);
       const reply = result.clarification?.question ?? (updates.length ? 'I have captured the safe details for your submission.' : 'Tell me a little more about the idea.');
-      setTurns((current) => [...current, ...updates.map((value) => ({ role: 'intake' as const, text: value })), { role: 'intake', text: reply }]);
+      setTurns((current) => [
+        ...current,
+        ...updates.map((value) => ({ role: 'intake' as const, text: value })),
+        { role: 'intake', text: reply, clarification: Boolean(result.clarification) },
+      ]);
     } catch {
       setTurns((current) => [...current, { role: 'intake', text: 'I could not process that turn. Please try again.' }]);
     } finally {
@@ -42,7 +47,10 @@ export function IntakeChat({ disabled, onSend }: Props) {
         {turns.map((turn, index) => (
           <div className={`chat-turn ${turn.role}`} key={`${turn.role}-${index}`}>
             {turn.role === 'intake' && <span className="assistant-mark" aria-hidden="true">A</span>}
-            <div className="turn-content">{turn.role === 'intake' && <span className="speaker-label">AIMPLIFY INTAKE</span>}<p>{turn.text}</p></div>
+            <div className="turn-content">
+              {turn.role === 'intake' && <span className="speaker-label">AIMPLIFY INTAKE</span>}
+              {turn.clarification ? <ClarificationPrompt question={turn.text} /> : <p>{turn.text}</p>}
+            </div>
           </div>
         ))}
         {busy && <div className="working-indicator" role="status">Reviewing your message<span>…</span></div>}

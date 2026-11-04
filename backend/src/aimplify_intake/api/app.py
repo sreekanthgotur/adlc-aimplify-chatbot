@@ -22,7 +22,7 @@ from PyPDF2.errors import PdfReadError
 from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
 
-from aimplify_intake.graph.pacing import select_next_clarification
+from aimplify_intake.graph.intake_graph import create_intake_graph
 from aimplify_intake.ingestion.audio import TranscriptionProvider, transcribe_audio
 from aimplify_intake.ingestion.buffers import read_request_stream_to_memory
 from aimplify_intake.ingestion.documents import extract_docx, extract_pdf, extract_pptx
@@ -102,6 +102,9 @@ def create_app(
     app.state.session_factory = session_factory
     app.state.identity_verifier = identity_verifier
     app.state.candidate_extractor = candidate_extractor
+    app.state.intake_graph = create_intake_graph(
+        lambda text: extract_safe_candidates(text, app.state.candidate_extractor)
+    )
     app.state.transcription_provider = transcription_provider
     app.state.transcription_no_retention_approved = transcription_no_retention_approved
     app.state.max_upload_bytes = int(os.getenv("MAX_UPLOAD_BYTES", str(max_upload_bytes)))
@@ -136,12 +139,10 @@ def create_app(
             return submission
 
     def process_text(submission_id: str, text: str, request_id: str) -> dict[str, Any]:
-        updates = extract_safe_candidates(text, app.state.candidate_extractor)
         with session_factory() as session:
             submission = session.get(IdeaSubmission, submission_id)
             if submission is None:
                 raise HTTPException(status_code=404, detail="Session not found.")
-            persist_ai_values(session, submission, updates)
             current_values = {
                 value.field_key: value.value
                 for value in session.scalars(
@@ -149,13 +150,17 @@ def create_app(
                 )
             }
             schema = load_canonical_schema()
-            decision = select_next_clarification(schema["fields"], current_values)
-            state = read_field_state(session, submission)
-            state["clarification"] = (
-                {"field_key": decision.field_key, "question": decision.question}
-                if decision
-                else None
+            turn = app.state.intake_graph.invoke(
+                {
+                    "text": text,
+                    "canonical_fields": schema["fields"],
+                    "current_values": current_values,
+                }
             )
+            updates = turn["field_updates"]
+            persist_ai_values(session, submission, updates)
+            state = read_field_state(session, submission)
+            state["clarification"] = turn["clarification"]
             state["request_id"] = request_id
             state["field_updates"] = updates
             return state
