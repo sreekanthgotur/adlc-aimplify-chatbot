@@ -57,21 +57,21 @@ description: "TDD task list for AIMPLIFY Conversational Idea Intake"
 
 ### RED: Tests for User Story 1
 
-- [ ] T020 [P] [US1] Add failing HTTP and WebSocket contract tests for session creation, chat submission, raw streamed source upload, field-state retrieval, and the documented event envelopes in `backend/tests/contract/api/test_intake_http.py` and `backend/tests/contract/api/test_intake_websocket.py`.
-- [ ] T021 [P] [US1] Add failing parser adapter contract tests for valid multi-page PDF, DOCX, PPTX, WAV, MP3, and WebM inputs in `backend/tests/contract/ingestion/test_supported_sources.py`; assert RAM-only input and no disk artifacts per `contracts/intake-http.md` and `contracts/websocket.md`.
-- [ ] T022 [P] [US1] Add failing ingestion integration tests for unsupported, corrupt, and over-limit sources in `backend/tests/integration/test_source_rejection.py`; assert generic errors, no partial field writes, and release of request buffers.
-- [ ] T023 [P] [US1] Add failing frontend tests for chat, file/audio source selection, streaming field updates, and generic upload errors in `frontend/src/tests/intake-flow.test.tsx`.
+- [X] T020 [P] [US1] Add failing HTTP and WebSocket contract tests for session creation, chat submission, raw streamed source upload, field-state retrieval, and the documented event envelopes in `backend/tests/contract/api/test_intake_http.py`.
+- [X] T021 [P] [US1] Add failing parser adapter contract tests for valid multi-page PDF, DOCX, PPTX, WAV, MP3, and WebM inputs in `backend/tests/contract/ingestion/test_supported_sources.py`; assert RAM-only input and no disk artifacts per `contracts/intake-http.md` and `contracts/websocket.md`.
+- [X] T022 [P] [US1] Add failing ingestion integration tests for unsupported, corrupt, and over-limit sources in `backend/tests/integration/test_source_rejection.py`; assert generic errors, no partial field writes, and release of request buffers.
+- [X] T023 [P] [US1] Add failing frontend tests for chat, file/audio source selection, streaming field updates, and generic upload errors in `frontend/src/tests/intake-flow.test.tsx`.
 
 ### GREEN: Implementation for User Story 1
 
-- [ ] T024 [US1] Implement bounded raw request-body reading into request-scoped `io.BytesIO` buffers in `backend/src/aimplify_intake/ingestion/buffers.py`; reject over-limit streams and release buffers on success, failure, timeout, or disconnect.
-- [ ] T025 [P] [US1] Implement PDF, DOCX, and PPTX text extraction adapters using in-memory streams in `backend/src/aimplify_intake/ingestion/documents.py`; do not invoke path-based parser APIs or write derived text to disk.
-- [ ] T026 [P] [US1] Implement WAV, MP3, and WebM transcription adapters accepting `io.BytesIO` in `backend/src/aimplify_intake/ingestion/audio.py`; require approved no-retention provider configuration and release audio/transcript buffers after processing.
-- [ ] T027 [US1] Implement candidate extraction orchestration and canonical field/type validation in `backend/src/aimplify_intake/services/extraction.py`; invoke `safety/no_facts.py` on each candidate before any state update, database write, or client event.
-- [ ] T028 [US1] Implement atomic persistence of accepted field values and submission state in `backend/src/aimplify_intake/persistence/repositories.py`; persist no uploads, derived bytes, raw messages, or transcripts.
-- [ ] T029 [US1] Implement session creation, chat, source-upload, and field-state HTTP endpoints from `specs/001-conversational-intake/contracts/intake-http.md` in `backend/src/aimplify_intake/api/http.py`; use raw streamed uploads rather than multipart upload spooling.
-- [ ] T030 [US1] Implement authenticated WebSocket connection and `client.message`, `client.source.begin`, binary source, `client.source.commit`, and safe server events in `backend/src/aimplify_intake/api/websocket.py` according to `specs/001-conversational-intake/contracts/websocket.md`.
-- [ ] T031 [US1] Implement the responsive intake chat, source picker, safe field-state view, and WebSocket/HTTP fallback client in `frontend/src/components/IntakeChat.tsx`, `frontend/src/components/SourcePicker.tsx`, and `frontend/src/services/intake.ts`.
+- [X] T024 [US1] Implement bounded raw request-body reading into request-scoped `io.BytesIO` buffers in `backend/src/aimplify_intake/ingestion/buffers.py`; reject over-limit streams and release buffers on success, failure, timeout, or disconnect.
+- [X] T025 [P] [US1] Implement PDF, DOCX, and PPTX text extraction adapters using in-memory streams in `backend/src/aimplify_intake/ingestion/documents.py`; do not invoke path-based parser APIs or write derived text to disk.
+- [X] T026 [P] [US1] Implement WAV, MP3, and WebM transcription adapters accepting `io.BytesIO` in `backend/src/aimplify_intake/ingestion/audio.py`; require approved no-retention provider configuration and release audio/transcript buffers after processing.
+- [X] T027 [US1] Implement candidate extraction orchestration and canonical field/type validation in `backend/src/aimplify_intake/services/extraction.py`; invoke `safety/no_facts.py` on each candidate before any state update, database write, or client event.
+- [X] T028 [US1] Implement atomic persistence of accepted field values and submission state in `backend/src/aimplify_intake/persistence/repositories.py`; persist no uploads, derived bytes, raw messages, or transcripts.
+- [X] T029 [US1] Implement session creation, chat, source-upload, and field-state HTTP endpoints from `specs/001-conversational-intake/contracts/intake-http.md` in `backend/src/aimplify_intake/api/app.py`; use raw streamed uploads rather than multipart upload spooling.
+- [X] T030 [US1] Implement authenticated WebSocket connection and `client.message`, `client.source.begin`, binary source, `client.source.commit`, and safe server events in `backend/src/aimplify_intake/api/app.py` according to `specs/001-conversational-intake/contracts/websocket.md`.
+- [X] T031 [US1] Implement the responsive intake chat, source picker, safe field-state view, and WebSocket/HTTP fallback client in `frontend/src/components/IntakeChat.tsx`, `frontend/src/components/SourcePicker.tsx`, and `frontend/src/services/intake.ts`.
 
 **Checkpoint**: User Story 1 works independently for all six file types and chat, with RAM-only parsing and safe accepted values.
 

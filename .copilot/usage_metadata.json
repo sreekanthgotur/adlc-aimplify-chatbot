@@ -1,0 +1,17 @@
+{
+  "schemaId": 3,
+  "chats": [
+    {
+      "chatId": "b9e0cf89-01ce-4fcd-9b02-778d6edf9708",
+      "title": "/speckit-implement Phase 3",
+      "titleSource": "firstUserMessage",
+      "turnIds": [
+        "request_b89b0ee6-b42c-4541-b383-b90b0ad7a17e",
+        "request_1919e35a-28d9-4f0a-8a2a-55835f74b823",
+        "request_408c8816-db67-4d26-afe1-7b803031ea0c"
+      ],
+      "firstSeen": "2026-11-04 13:11:33.976",
+      "lastSeen": "2026-11-04 13:54:00.269"
+    }
+  ]
+}
