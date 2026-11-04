@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 import re
-from typing import Any, Iterable
+from collections.abc import Iterable
+from typing import Any
 
 _DIGIT_PATTERN = re.compile(r"\d")
 _PERCENT_PATTERN = re.compile(r"(?:\d\s*%|\bpercent(?:age)?\b)", re.IGNORECASE)
@@ -30,6 +31,32 @@ _QUALIFIER_WITH_WORD_NUMBER_PATTERN = re.compile(
     r"seventy|eighty|ninety|hundred|thousand)\b",
     re.IGNORECASE,
 )
+_VALIDATION_TOKEN = object()
+
+
+class _NoFactsValidatedCandidate(dict[str, str]):
+    __slots__ = ("_validation_proof",)
+
+    def __init__(self, candidate: dict[str, str], token: object) -> None:
+        if token is not _VALIDATION_TOKEN:
+            raise ValueError("Candidate has not passed NoFacts validation.")
+        super().__init__(candidate)
+        self._validation_proof = (_VALIDATION_TOKEN, tuple(sorted(self.items())))
+
+
+def mark_no_facts_validated(candidate: dict[str, str]) -> _NoFactsValidatedCandidate:
+    if no_facts_decision(candidate) != "pass":
+        raise ValueError("Candidate has not passed NoFacts validation.")
+    return _NoFactsValidatedCandidate(candidate, _VALIDATION_TOKEN)
+
+
+def is_no_facts_validated(candidate: object) -> bool:
+    if not isinstance(candidate, _NoFactsValidatedCandidate):
+        return False
+    return candidate._validation_proof == (
+        _VALIDATION_TOKEN,
+        tuple(sorted(candidate.items())),
+    )
 
 
 def _iter_text_leaves(candidate: Any) -> Iterable[str]:
