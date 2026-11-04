@@ -43,6 +43,17 @@
       ],
       "firstSeen": "2026-11-04 17:09:14.063",
       "lastSeen": "2026-11-04 17:51:02.275"
+    },
+    {
+      "chatId": "caeb9b93-ebad-42d6-9b8c-80d4b4b053f5",
+      "title": "/speckit-implement Phase 7",
+      "titleSource": "firstUserMessage",
+      "turnIds": [
+        "request_5b709a5a-5213-47b4-964b-25a2b5240131",
+        "request_9ab2080a-cf0b-4474-acc8-863310793ffa"
+      ],
+      "firstSeen": "2026-11-04 18:58:02.895",
+      "lastSeen": "2026-11-04 19:24:12.921"
     }
   ]
 }
