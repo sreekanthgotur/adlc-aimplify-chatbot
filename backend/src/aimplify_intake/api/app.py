@@ -22,6 +22,7 @@ from PyPDF2.errors import PdfReadError
 from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
 
+from aimplify_intake.api.http import create_human_fields_router
 from aimplify_intake.graph.intake_graph import create_intake_graph
 from aimplify_intake.ingestion.audio import TranscriptionProvider, transcribe_audio
 from aimplify_intake.ingestion.buffers import read_request_stream_to_memory
@@ -137,6 +138,8 @@ def create_app(
             if submission is None:
                 raise HTTPException(status_code=404, detail="Session not found.")
             return submission
+
+    app.include_router(create_human_fields_router(subject_for, require_allowed_origin))
 
     def process_text(submission_id: str, text: str, request_id: str) -> dict[str, Any]:
         with session_factory() as session:

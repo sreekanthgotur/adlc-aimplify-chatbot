@@ -69,7 +69,17 @@ class CanonicalFieldDefinition(Base):
     declaration_only: Mapped[bool] = mapped_column(Boolean, nullable=False)
     clarification_prompt: Mapped[str] = mapped_column(Text, nullable=False)
 
-    __table_args__ = (UniqueConstraint("schema_version", "field_key", name="uq_field_key"),)
+    __table_args__ = (
+        UniqueConstraint("schema_version", "field_key", name="uq_field_key"),
+        CheckConstraint(
+            "NOT declaration_only OR NOT ai_writable",
+            name="ck_declaration_fields_not_ai_writable",
+        ),
+        CheckConstraint(
+            "fill_mode != 'Human only' OR NOT ai_writable",
+            name="ck_human_only_fields_not_ai_writable",
+        ),
+    )
 
 
 class IdeaSubmission(Base):

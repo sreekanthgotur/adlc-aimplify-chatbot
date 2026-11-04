@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { IntakeChat } from './components/IntakeChat';
+import { HumanDeclarations } from './components/HumanDeclarations';
 import { SourcePicker } from './components/SourcePicker';
 import {
   connectIntakeSocket,
@@ -7,9 +8,17 @@ import {
   getFieldState,
   IntakeFieldState,
   IntakeResult,
+  HumanFieldUpdate,
   sendMessage,
   uploadSource,
 } from './services/intake';
+
+const HUMAN_ONLY_FIELD_KEYS = new Set([
+  'declaration_accepted',
+  'submitter_signature',
+  'date_of_submission',
+  'reviewer_notes',
+]);
 
 export default function App() {
   const [sessionId, setSessionId] = useState<string>();
@@ -55,14 +64,16 @@ export default function App() {
     setError('');
     try {
       const result = sendOverSocket ? await sendOverSocket(text) : await sendMessage(sessionId, text);
-      applyResult(result);
-      return result;
+      const safeResult = filterAiUpdates(result);
+      applyResult(safeResult);
+      return safeResult;
     } catch {
       setSendOverSocket(undefined);
       try {
         const result = await sendMessage(sessionId, text);
-        applyResult(result);
-        return result;
+        const safeResult = filterAiUpdates(result);
+        applyResult(safeResult);
+        return safeResult;
       } catch {
         setError('Your message could not be processed. Please try again.');
         throw new Error('Message could not be processed.');
@@ -86,11 +97,29 @@ export default function App() {
     setFields((current) => {
       const next = new Map(current.map((field) => [field.field_key, field]));
       for (const update of result.field_updates) {
+        if (HUMAN_ONLY_FIELD_KEYS.has(update.field_key)) continue;
         const existing = next.get(update.field_key);
         if (existing) next.set(update.field_key, { ...existing, value: update.value, origin: update.origin });
       }
       return [...next.values()];
     });
+  }
+
+  function filterAiUpdates(result: IntakeResult): IntakeResult {
+    return {
+      ...result,
+      field_updates: result.field_updates.filter(
+        (update) => !HUMAN_ONLY_FIELD_KEYS.has(update.field_key),
+      ),
+    };
+  }
+
+  function applyHumanUpdate(update: HumanFieldUpdate) {
+    setFields((current) => current.map((field) => (
+      field.field_key === update.field_key
+        ? { ...field, value: update.value, origin: update.origin }
+        : field
+    )));
   }
 
   return (
@@ -130,7 +159,7 @@ export default function App() {
           </div>
           {fields.length ? (
             <div className="field-list">
-              {fields.filter((field) => field.value).map((field) => (
+              {fields.filter((field) => field.value && !field.human_only).map((field) => (
                 <div className="field-row" key={field.field_key}>
                   <span>{field.field_key.replace(/_/g, ' ')}</span>
                   <strong>{field.value}</strong>
@@ -139,10 +168,11 @@ export default function App() {
               {!fields.some((field) => field.value) && <p className="empty-state">Your accepted details will appear here as you go.</p>}
             </div>
           ) : <p className="empty-state">Preparing your submission…</p>}
+          {sessionId && <HumanDeclarations sessionId={sessionId} fields={fields} onSaved={applyHumanUpdate} />}
           <div className="section-progress">
             <div className="progress-caption"><span>Submission progress</span><strong>{fields.length ? Math.round((fields.filter((field) => field.value).length / fields.length) * 100) : 0}%</strong></div>
             <div className="progress-track"><span style={{ width: `${fields.length ? (fields.filter((field) => field.value).length / fields.length) * 100 : 0}%` }} /></div>
-            <p>Declarations stay under your control and are completed at review.</p>
+            <p>Declaration details are recorded only from your inputs.</p>
           </div>
         </aside>
       </div>

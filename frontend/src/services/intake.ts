@@ -12,6 +12,12 @@ export type IntakeFieldState = {
   origin?: 'ai_extracted' | 'human_entered';
 };
 
+export type HumanFieldUpdate = {
+  field_key: string;
+  value: string;
+  origin: 'human_entered';
+};
+
 export type IntakeResult = {
   request_id: string;
   field_updates: Array<{ field_key: string; value: string; origin: 'ai_extracted' }>;
@@ -47,6 +53,18 @@ export function createSession(): Promise<IntakeSession> {
 
 export function getFieldState(sessionId: string): Promise<FieldResponse> {
   return request(`/api/v1/sessions/${encodeURIComponent(sessionId)}/fields`);
+}
+
+export function saveHumanField(
+  sessionId: string,
+  fieldKey: string,
+  value: string | boolean,
+): Promise<HumanFieldUpdate> {
+  return request(`/api/v1/sessions/${encodeURIComponent(sessionId)}/fields/${encodeURIComponent(fieldKey)}`, {
+    method: 'PUT',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ value }),
+  });
 }
 
 export function sendMessage(sessionId: string, text: string): Promise<IntakeResult> {
