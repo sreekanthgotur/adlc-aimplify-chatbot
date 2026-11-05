@@ -123,15 +123,18 @@
 
 ### Canonical schema inventory
 
-- **Decision**: Define stable placeholder field keys and six section slots in the
-  design; require the authoritative field names, types, descriptions, mandatory
-  flags, and section mapping as a precondition to seeded production data and
-  migrations.
-- **Rationale**: Neither the repository nor the specification lists the 27
-  canonical field names or their section allocation. Inventing them would create
-  a non-canonical schema.
-- **Alternatives considered**: Guessing names or evenly distributing fields among
-  sections was rejected as incompatible with the constitution.
+- **Decision**: Use the concrete field keys, names, types, enum values, section
+  assignments, and fill modes recorded in `data-model.md` as the authoritative
+  schema for registry data and migrations. To satisfy the constitutional limit
+  of exactly 18 mandatory fields total, `priority_level`, `preferred_technology`,
+  and `build_intent` are optional; the three declaration fields remain mandatory.
+- **Rationale**: The schema owner supplied the 27-field inventory. Its initial
+  mandatory flags totaled 21 when the three mandatory human declarations were
+  counted. The owner selected these three AI-extractable fields to become optional,
+  yielding 15 mandatory AI-extractable fields plus 3 mandatory declarations.
+- **Alternatives considered**: Keeping all 21 supplied mandatory flags would
+  conflict with the constitution. Guessing section assignments or other field
+  names was unnecessary once the authoritative inventory was supplied.
 
 ### Unspecified operational policy
 

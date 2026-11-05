@@ -1,0 +1,340 @@
+{
+  "schema_version": "active",
+  "sections": [
+    { "key": "section_01", "name": "Submitter Information", "ordinal": 1 },
+    { "key": "section_02", "name": "Idea Details", "ordinal": 2 },
+    { "key": "section_03", "name": "Impact and Feasibility", "ordinal": 3 },
+    { "key": "section_04", "name": "Program and Hackathon Alignment", "ordinal": 4 },
+    { "key": "section_05", "name": "Supporting Materials and Notes", "ordinal": 5 },
+    { "key": "section_06", "name": "Declaration (Human Only)", "ordinal": 6 }
+  ],
+  "fields": [
+    {
+      "key": "submitter_name",
+      "display_name": "Full Name",
+      "section_key": "section_01",
+      "value_type": "string",
+      "mandatory": true,
+      "fill_mode": "Auto/Extract",
+      "ai_writable": true,
+      "declaration_only": false,
+      "clarification_prompt": "What is your full name?"
+    },
+    {
+      "key": "submitter_email",
+      "display_name": "Work Email",
+      "section_key": "section_01",
+      "value_type": "email",
+      "mandatory": true,
+      "fill_mode": "Auto/Extract",
+      "ai_writable": true,
+      "declaration_only": false,
+      "clarification_prompt": "What is your work email?"
+    },
+    {
+      "key": "business_unit",
+      "display_name": "Business Unit / Department",
+      "section_key": "section_01",
+      "value_type": "string",
+      "mandatory": true,
+      "fill_mode": "Auto/Extract",
+      "ai_writable": true,
+      "declaration_only": false,
+      "clarification_prompt": "Which business unit or department does this idea belong to?"
+    },
+    {
+      "key": "designation",
+      "display_name": "Designation / Role",
+      "section_key": "section_01",
+      "value_type": "string",
+      "mandatory": true,
+      "fill_mode": "Auto/Extract",
+      "ai_writable": true,
+      "declaration_only": false,
+      "clarification_prompt": "What is your current designation or role?"
+    },
+    {
+      "key": "reporting_manager",
+      "display_name": "Reporting Manager",
+      "section_key": "section_01",
+      "value_type": "string",
+      "mandatory": true,
+      "fill_mode": "Auto/Extract",
+      "ai_writable": true,
+      "declaration_only": false,
+      "clarification_prompt": "Who is your reporting manager?"
+    },
+    {
+      "key": "manager_email",
+      "display_name": "Manager Email",
+      "section_key": "section_01",
+      "value_type": "email",
+      "mandatory": false,
+      "fill_mode": "Auto/Extract",
+      "ai_writable": true,
+      "declaration_only": false,
+      "clarification_prompt": "What is your manager's email address?"
+    },
+    {
+      "key": "idea_title",
+      "display_name": "Idea Title",
+      "section_key": "section_02",
+      "value_type": "string",
+      "mandatory": true,
+      "fill_mode": "Suggest/Extract",
+      "ai_writable": true,
+      "declaration_only": false,
+      "clarification_prompt": "What is the title of your idea?"
+    },
+    {
+      "key": "idea_category",
+      "display_name": "Idea Category",
+      "section_key": "section_02",
+      "value_type": "enum",
+      "allowed_values": [
+        "AI Agent",
+        "Process Automation",
+        "Data & Analytics",
+        "AI-SDLC Tool",
+        "Client Solution",
+        "Internal Tool",
+        "L&D / Training",
+        "Governance & Compliance",
+        "Platform / Infrastructure",
+        "Other"
+      ],
+      "mandatory": true,
+      "fill_mode": "Suggest/Extract",
+      "ai_writable": true,
+      "declaration_only": false,
+      "clarification_prompt": "Which idea category best fits this submission?"
+    },
+    {
+      "key": "aimplify_platform",
+      "display_name": "AIMPLIFY Platform",
+      "section_key": "section_02",
+      "value_type": "enum",
+      "allowed_values": ["Forge", "Atlas", "Sentinel", "Titan"],
+      "mandatory": true,
+      "fill_mode": "Suggest/Extract",
+      "ai_writable": true,
+      "declaration_only": false,
+      "clarification_prompt": "Which AIMPLIFY platform does this idea align with?"
+    },
+    {
+      "key": "idea_maturity",
+      "display_name": "Idea Maturity",
+      "section_key": "section_02",
+      "value_type": "enum",
+      "allowed_values": ["Idea", "Prototype", "PoC", "MVP"],
+      "mandatory": true,
+      "fill_mode": "Suggest/Extract",
+      "ai_writable": true,
+      "declaration_only": false,
+      "clarification_prompt": "What is the current maturity level of this idea?"
+    },
+    {
+      "key": "problem_statement",
+      "display_name": "Problem Statement",
+      "section_key": "section_02",
+      "value_type": "text",
+      "mandatory": true,
+      "fill_mode": "Draft + Coach",
+      "ai_writable": true,
+      "declaration_only": false,
+      "clarification_prompt": "What problem are you trying to solve?"
+    },
+    {
+      "key": "proposed_solution",
+      "display_name": "Proposed Solution",
+      "section_key": "section_02",
+      "value_type": "text",
+      "mandatory": true,
+      "fill_mode": "Draft + Coach",
+      "ai_writable": true,
+      "declaration_only": false,
+      "clarification_prompt": "What solution are you proposing?"
+    },
+    {
+      "key": "expected_benefits",
+      "display_name": "Expected Benefits / Business Value",
+      "section_key": "section_03",
+      "value_type": "text",
+      "mandatory": true,
+      "fill_mode": "Draft + Coach",
+      "ai_writable": true,
+      "declaration_only": false,
+      "clarification_prompt": "What benefits or business value do you expect?"
+    },
+    {
+      "key": "target_beneficiaries",
+      "display_name": "Who Benefits?",
+      "section_key": "section_03",
+      "value_type": "string",
+      "mandatory": true,
+      "fill_mode": "Suggest/Extract",
+      "ai_writable": true,
+      "declaration_only": false,
+      "clarification_prompt": "Who will benefit from this idea?"
+    },
+    {
+      "key": "estimated_users",
+      "display_name": "Estimated Users / Scale",
+      "section_key": "section_03",
+      "value_type": "string",
+      "mandatory": false,
+      "fill_mode": "Ask",
+      "ai_writable": true,
+      "declaration_only": false,
+      "clarification_prompt": "How many users do you estimate will use this?"
+    },
+    {
+      "key": "estimated_effort",
+      "display_name": "Estimated Effort to Build",
+      "section_key": "section_03",
+      "value_type": "enum",
+      "allowed_values": ["Small", "Medium", "Large", "XL", "Not Sure"],
+      "mandatory": true,
+      "fill_mode": "Suggest/Extract",
+      "ai_writable": true,
+      "declaration_only": false,
+      "clarification_prompt": "What is the estimated effort to build this idea?"
+    },
+    {
+      "key": "priority_level",
+      "display_name": "Priority Level",
+      "section_key": "section_03",
+      "value_type": "enum",
+      "allowed_values": ["High", "Medium", "Low", "Exploratory"],
+      "mandatory": false,
+      "fill_mode": "Ask",
+      "ai_writable": true,
+      "declaration_only": false,
+      "clarification_prompt": "What priority should be assigned to this idea?"
+    },
+    {
+      "key": "preferred_technology",
+      "display_name": "Preferred Technology / Tools",
+      "section_key": "section_03",
+      "value_type": "string",
+      "mandatory": false,
+      "fill_mode": "Suggest/Extract",
+      "ai_writable": true,
+      "declaration_only": false,
+      "clarification_prompt": "What technologies or tools would you prefer?"
+    },
+    {
+      "key": "submission_type",
+      "display_name": "Submission Type",
+      "section_key": "section_04",
+      "value_type": "enum",
+      "allowed_values": [
+        "General Idea",
+        "Hackathon Entry",
+        "AIIM Cohort Project",
+        "AI CIC Initiative",
+        "Client Solution Idea",
+        "Internal Tool Request"
+      ],
+      "mandatory": true,
+      "fill_mode": "Suggest/Extract",
+      "ai_writable": true,
+      "declaration_only": false,
+      "clarification_prompt": "What type of submission is this?"
+    },
+    {
+      "key": "related_event",
+      "display_name": "Related Hackathon / Event",
+      "section_key": "section_04",
+      "value_type": "string",
+      "mandatory": false,
+      "fill_mode": "Ask",
+      "ai_writable": true,
+      "declaration_only": false,
+      "clarification_prompt": "Is this related to a hackathon or event?"
+    },
+    {
+      "key": "build_intent",
+      "display_name": "Build Intent (Self / Team)",
+      "section_key": "section_04",
+      "value_type": "enum",
+      "allowed_values": [
+        "Lead myself",
+        "Need team members",
+        "Submitting idea only",
+        "Join existing team"
+      ],
+      "mandatory": false,
+      "fill_mode": "Ask",
+      "ai_writable": true,
+      "declaration_only": false,
+      "clarification_prompt": "How do you plan to build this idea?"
+    },
+    {
+      "key": "team_members",
+      "display_name": "Team Members",
+      "section_key": "section_04",
+      "value_type": "string",
+      "mandatory": false,
+      "fill_mode": "Ask",
+      "ai_writable": true,
+      "declaration_only": false,
+      "clarification_prompt": "Who are the team members involved?"
+    },
+    {
+      "key": "reference_links",
+      "display_name": "Reference Links",
+      "section_key": "section_05",
+      "value_type": "string",
+      "mandatory": false,
+      "fill_mode": "Suggest/Extract",
+      "ai_writable": true,
+      "declaration_only": false,
+      "clarification_prompt": "Do you have any reference links to include?"
+    },
+    {
+      "key": "reviewer_notes",
+      "display_name": "Additional Notes for Reviewer",
+      "section_key": "section_05",
+      "value_type": "text",
+      "mandatory": false,
+      "fill_mode": "Human only",
+      "ai_writable": false,
+      "declaration_only": false,
+      "clarification_prompt": "Do you want to add notes for the reviewer?"
+    },
+    {
+      "key": "declaration_accepted",
+      "display_name": "Declaration Accepted",
+      "section_key": "section_06",
+      "value_type": "boolean",
+      "mandatory": true,
+      "fill_mode": "Human only",
+      "ai_writable": false,
+      "declaration_only": true,
+      "clarification_prompt": "Do you accept the declaration?"
+    },
+    {
+      "key": "submitter_signature",
+      "display_name": "Submitter Signature",
+      "section_key": "section_06",
+      "value_type": "string",
+      "mandatory": true,
+      "fill_mode": "Human only",
+      "ai_writable": false,
+      "declaration_only": true,
+      "clarification_prompt": "Please provide your signature."
+    },
+    {
+      "key": "date_of_submission",
+      "display_name": "Date of Submission",
+      "section_key": "section_06",
+      "value_type": "date",
+      "mandatory": true,
+      "fill_mode": "Human only",
+      "ai_writable": false,
+      "declaration_only": true,
+      "clarification_prompt": "What is the date of submission?"
+    }
+  ]
+}

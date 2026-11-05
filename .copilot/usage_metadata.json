@@ -1,0 +1,86 @@
+{
+  "schemaId": 3,
+  "chats": [
+    {
+      "chatId": "b9e0cf89-01ce-4fcd-9b02-778d6edf9708",
+      "title": "/speckit-implement Phase 3",
+      "titleSource": "firstUserMessage",
+      "turnIds": [
+        "request_b89b0ee6-b42c-4541-b383-b90b0ad7a17e",
+        "request_1919e35a-28d9-4f0a-8a2a-55835f74b823",
+        "request_408c8816-db67-4d26-afe1-7b803031ea0c"
+      ],
+      "firstSeen": "2026-11-04 13:11:33.976",
+      "lastSeen": "2026-11-04 13:54:00.269"
+    },
+    {
+      "chatId": "af4bfdcb-62eb-4e79-abe2-8c24ed6845d2",
+      "title": "/speckit-implement Phase 4",
+      "titleSource": "firstUserMessage",
+      "turnIds": [
+        "request_82b8d6bd-216f-413d-a18c-e0e27d14b8e8"
+      ],
+      "firstSeen": "2026-11-04 15:50:41.999",
+      "lastSeen": "2026-11-04 16:06:27.887"
+    },
+    {
+      "chatId": "05dbf5b4-fe9f-4f27-a116-854e58d02493",
+      "title": "Speckit Phase 5 implementation",
+      "titleSource": "copilot",
+      "turnIds": [
+        "request_ec3d9619-bb8b-4459-a0d0-ef709b1d3550"
+      ],
+      "firstSeen": "2026-11-04 16:32:16.203",
+      "lastSeen": "2026-11-04 16:54:16.244"
+    },
+    {
+      "chatId": "e1faa618-c3cd-4b14-9d7d-f5f89dccf52c",
+      "title": "/speckit-implement Phase 6",
+      "titleSource": "firstUserMessage",
+      "turnIds": [
+        "request_4187b580-efe2-49ae-93f5-8816567b4563",
+        "request_1e892f17-48ff-421b-a880-2a0fdb7f96b3"
+      ],
+      "firstSeen": "2026-11-04 17:09:14.063",
+      "lastSeen": "2026-11-04 17:51:02.275"
+    },
+    {
+      "chatId": "caeb9b93-ebad-42d6-9b8c-80d4b4b053f5",
+      "title": "/speckit-implement Phase 7",
+      "titleSource": "firstUserMessage",
+      "turnIds": [
+        "request_5b709a5a-5213-47b4-964b-25a2b5240131",
+        "request_9ab2080a-cf0b-4474-acc8-863310793ffa"
+      ],
+      "firstSeen": "2026-11-04 18:58:02.895",
+      "lastSeen": "2026-11-04 19:24:12.921"
+    },
+    {
+      "chatId": "7faff15d-4bbd-4739-8a89-193f3e025360",
+      "title": "/speckit-converge Audit against Pre-Release Builda",
+      "titleSource": "firstUserMessage",
+      "turnIds": [
+        "request_9ea9c92a-47c5-4632-bb12-d20fcde34663",
+        "request_8858ad97-3381-4a06-8810-31d812d1c289",
+        "request_ccf0b7f3-d693-407c-a752-4fbcc71efcb5",
+        "request_c9aab36c-1f03-4a3f-9e50-9736e7dbcb25",
+        "request_1c41d940-a54a-451d-8743-a54665b40adb",
+        "request_18010103-2e6b-4284-8488-3d971f17cf2e",
+        "request_9a869f41-55a2-4a4b-9276-033670ea50ad",
+        "request_e5ac7ddf-ef0b-4b4a-8a0a-43a9979cb020"
+      ],
+      "firstSeen": "2026-11-05 09:49:39.070",
+      "lastSeen": "2026-11-05 11:30:56.073"
+    },
+    {
+      "chatId": "cc733f86-0523-4f6b-9b50-3c1aa92c1de2",
+      "title": "Execute Stage 5: Deploy (Agentic CI Governance & D",
+      "titleSource": "firstUserMessage",
+      "turnIds": [
+        "request_1e3a2c11-93b4-4279-9a3d-a23c3ebba54d"
+      ],
+      "firstSeen": "2026-11-05 12:56:41.416",
+      "lastSeen": "2026-11-05 13:04:52.283"
+    }
+  ]
+}
