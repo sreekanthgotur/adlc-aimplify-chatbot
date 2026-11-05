@@ -46,6 +46,7 @@ describe('intake flow', () => {
     render(<App />);
 
     const input = await screen.findByLabelText(/choose a document or audio file/i);
+    await waitFor(() => expect(input).not.toBeDisabled());
     fireEvent.change(input, { target: { files: [new File(['bad'], 'private-name.pdf', { type: 'application/pdf' })] } });
 
     expect(await screen.findByText('This source could not be processed.')).toBeInTheDocument();
