@@ -207,16 +207,16 @@ frontend/
 ├── vite.config.ts
 └── src/
     ├── components/          # Chat, source input, and field-state view
-    ├── pages/
+  ├── App.tsx
     ├── services/            # HTTP and WebSocket clients
     └── tests/
 ```
 
 **Structure Decision**: Separate backend and frontend projects because the
 specified Python service and React browser client have independent dependencies
-and test runners. The repository currently contains planning artifacts only; this
-tree is the proposed implementation layout, not a claim that source directories
-already exist.
+and test runners. The backend, frontend, and test directories are implemented;
+this tree is a logical overview, not an exhaustive file listing. Production
+ingress and provider-specific configuration remain deployment integrations.
 
 ## Local Validation and Deployment Status
 
@@ -239,10 +239,11 @@ are persisted, but no accepted-data retention duration or deletion policy is
 configured; production release requires an approved duration and implemented
 deletion/backup-expiration controls.
 
-The golden runner currently validates manifest coverage and result bookkeeping
-for 50 metadata-only case records; its script marks those records passed without
-executing model inference. Unit, contract, and integration tests provide the
-executable behavior checks in this checkout. The API-to-parser no-disk path is
+The golden runner executes 50 deterministic case inputs through chat, PDF, or
+audio HTTP intake using injected test extraction and transcription providers.
+It checks expected accepted and rejected field updates, persisted values,
+human-only omissions, clarification count, and manifest coverage. It does not
+call an external model or production provider. The API-to-parser no-disk path is
 covered, but end-to-end ingress/proxy behavior and logs are not verified because
 no proxy deployment is included. See [the ingress release gate](../../deploy/ingress/README.md).
 

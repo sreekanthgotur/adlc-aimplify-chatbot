@@ -4,9 +4,10 @@ from pathlib import Path
 import pytest
 
 from aimplify_intake.evaluation.golden_runner import (
+    evaluate_case,
     load_cases,
     load_manifest,
-    run_golden_evaluation,
+    validate_case_coverage,
     validate_manifest,
 )
 
@@ -22,15 +23,44 @@ def test_manifest_has_required_coverage_and_at_least_50_cases() -> None:
     assert len(cases) >= 50
 
 
-def test_runner_fails_if_case_is_missing_from_results() -> None:
+def test_golden_case_executes_intake_and_checks_its_expected_outcome() -> None:
+    evaluate_case(
+        {
+            "id": "case-behavior",
+            "modality": "chat",
+            "claim": "The workflow saves 15 hours.",
+        },
+        {
+            "accepted_fields": [
+                "submitter_name",
+                "idea_title",
+                "target_beneficiaries",
+                "submission_type",
+                "reference_links",
+            ],
+            "rejected_fields": ["problem_statement"],
+            "human_only_fields": [
+                "declaration_accepted",
+                "submitter_signature",
+                "date_of_submission",
+                "reviewer_notes",
+            ],
+            "human_only_omitted": True,
+            "clarification_count": 1,
+        }
+    )
+
+
+def test_runner_rejects_cases_without_behavioral_expectations() -> None:
     golden_dir = Path(__file__).resolve().parents[2] / "golden"
     manifest_path = golden_dir / "golden_manifest.json"
     cases_path = golden_dir / "cases.jsonl"
     cases = load_cases(cases_path)
-    incomplete_results = {case["id"]: "pass" for case in cases[:-1]}
+    cases[0].pop("claim")
+    manifest = load_manifest(manifest_path)
 
-    with pytest.raises(ValueError, match="no skipped or omitted cases"):
-        run_golden_evaluation(manifest_path, cases_path, incomplete_results)
+    with pytest.raises(ValueError, match="claim and expected outcome"):
+        validate_case_coverage(cases, manifest)
 
 
 def test_runner_requires_single_question_and_human_only_manifest_flags(tmp_path: Path) -> None:

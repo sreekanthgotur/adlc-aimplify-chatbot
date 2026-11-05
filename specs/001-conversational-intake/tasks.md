@@ -152,12 +152,13 @@ description: "TDD task list for AIMPLIFY Conversational Idea Intake"
 - [ ] T052 Update `specs/001-conversational-intake/quickstart.md` and `specs/001-conversational-intake/plan.md` with final runnable commands, configured upload limits, retention policy, and verified ingress behavior before release.
 
 **Phase 7 verification note**: T048, T049, and T052 remain open because this
-repository has no reverse proxy to exercise. Application/WebSocket canaries and
-the API-to-parser stream/write-trap contract pass, but proxy logs, no-buffer
-behavior, and OS-level ingress writes remain deployment release gates. The 50
-golden records currently contain coverage metadata only; the passing runner
-validates the manifest and result bookkeeping but does not execute model
-inference.
+repository has no production reverse proxy and the accepted-data retention
+policy is not approved. Application/WebSocket canaries and the API-to-parser
+stream/write-trap contract pass, but proxy logs, no-buffer behavior, and
+OS-level ingress writes remain deployment release gates. The 50 golden records
+contain deterministic claim inputs and expected outcomes and execute chat,
+document, and audio API paths with injected test providers. They validate intake
+behavior without calling an external model or production provider.
 
 ---
 
@@ -235,5 +236,17 @@ GREEN (after RED failures are confirmed):
 
 - Every task uses the required `- [ ] Tnnn [P?] [USn?] action + exact path` checklist format.
 - `[P]` appears only where file ownership and dependencies permit parallel work.
-- The repo currently has no application implementation. T009 uses the concrete authoritative inventory in `specs/001-conversational-intake/data-model.md`; no placeholder field names or mandatory flags may be shipped as canonical values.
-- No application test suite exists yet, so the RED tasks establish the tests before the corresponding implementation work.
+- The application implementation and automated test suites are present. T009 uses the concrete authoritative inventory in `specs/001-conversational-intake/data-model.md`; no placeholder field names or mandatory flags may be shipped as canonical values.
+- The RED tasks established automated tests before the corresponding implementation work.
+
+## Phase 8: Convergence
+
+- [X] T053 Replace metadata-only golden pass bookkeeping with executable deterministic cases and expected outcomes across the buildable intake paths; fail on behavioral mismatches, missing cases, or unmet safety, pacing, human-only, and modality coverage per SC-002, SC-003, SC-004, SC-005, and SC-006 (partial)
+
+## Phase 9: Convergence
+
+- [X] T054 Update the quickstart, plan, and Phase 7 verification note to describe the executable deterministic golden API cases and stubbed providers accurately, and remove obsolete claims that the suite is metadata-only or the application structure is not implemented per SC-006 (partial)
+
+## Phase 10: Convergence
+
+- [X] T055 Run the frontend tests, typecheck, and production build with dependencies from `frontend/package-lock.json`; fix failures affecting intake, clarification pacing, or human declarations per T051 and SC-007 (partial)

@@ -54,6 +54,23 @@
       ],
       "firstSeen": "2026-11-04 18:58:02.895",
       "lastSeen": "2026-11-04 19:24:12.921"
+    },
+    {
+      "chatId": "7faff15d-4bbd-4739-8a89-193f3e025360",
+      "title": "/speckit-converge Audit against Pre-Release Builda",
+      "titleSource": "firstUserMessage",
+      "turnIds": [
+        "request_9ea9c92a-47c5-4632-bb12-d20fcde34663",
+        "request_8858ad97-3381-4a06-8810-31d812d1c289",
+        "request_ccf0b7f3-d693-407c-a752-4fbcc71efcb5",
+        "request_c9aab36c-1f03-4a3f-9e50-9736e7dbcb25",
+        "request_1c41d940-a54a-451d-8743-a54665b40adb",
+        "request_18010103-2e6b-4284-8488-3d971f17cf2e",
+        "request_9a869f41-55a2-4a4b-9276-033670ea50ad",
+        "request_e5ac7ddf-ef0b-4b4a-8a0a-43a9979cb020"
+      ],
+      "firstSeen": "2026-11-05 09:49:39.070",
+      "lastSeen": "2026-11-05 11:30:56.073"
     }
   ]
 }

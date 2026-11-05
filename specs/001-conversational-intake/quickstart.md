@@ -45,7 +45,7 @@ providers configured, so authenticated user flows require deployment wiring.
 
 ## Start the frontend
 
-In another terminal, after frontend source and `package.json` are added:
+In another terminal, install frontend dependencies and start the application:
 
 ```powershell
 npm ci --prefix frontend
@@ -67,11 +67,13 @@ npm run typecheck --prefix frontend
 npm run build --prefix frontend
 ```
 
-The golden command validates the 50-case manifest, coverage categories, and
-result bookkeeping. Its current script supplies pass results for metadata-only
-case records; it does not execute model inference. See [the data model](./data-model.md),
-[the API contract](./contracts/intake-http.md), and [the WebSocket contract](./contracts/websocket.md)
-for invariant details.
+The golden command executes 50 deterministic case inputs through chat, PDF, or
+audio HTTP intake using injected test extraction and transcription providers.
+Each case checks expected accepted and rejected field updates, persisted values,
+human-only omissions, and clarification count; the runner also enforces required
+modality and NoFacts-category coverage. It does not call an external model or
+production provider. See [the data model](./data-model.md), [the API contract](./contracts/intake-http.md),
+and [the WebSocket contract](./contracts/websocket.md) for invariant details.
 
 ## End-to-end validation scenarios
 
