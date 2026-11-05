@@ -29,6 +29,26 @@
       "submitter_signature",
       "date_of_submission"
     ]
+  },
+  "expected_outcomes": {
+    "safe_fields_one_question": {
+      "accepted_fields": [
+        "submitter_name",
+        "idea_title",
+        "target_beneficiaries",
+        "submission_type",
+        "reference_links"
+      ],
+      "rejected_fields": ["problem_statement"],
+      "human_only_fields": [
+        "declaration_accepted",
+        "submitter_signature",
+        "date_of_submission",
+        "reviewer_notes"
+      ],
+      "human_only_omitted": true,
+      "clarification_count": 1
+    }
   }
 }
 
