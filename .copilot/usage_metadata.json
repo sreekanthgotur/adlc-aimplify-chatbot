@@ -71,6 +71,16 @@
       ],
       "firstSeen": "2026-11-05 09:49:39.070",
       "lastSeen": "2026-11-05 11:30:56.073"
+    },
+    {
+      "chatId": "cc733f86-0523-4f6b-9b50-3c1aa92c1de2",
+      "title": "Execute Stage 5: Deploy (Agentic CI Governance & D",
+      "titleSource": "firstUserMessage",
+      "turnIds": [
+        "request_1e3a2c11-93b4-4279-9a3d-a23c3ebba54d"
+      ],
+      "firstSeen": "2026-11-05 12:56:41.416",
+      "lastSeen": "2026-11-05 13:04:52.283"
     }
   ]
 }

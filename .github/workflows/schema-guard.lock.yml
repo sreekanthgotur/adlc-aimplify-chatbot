@@ -1,0 +1,45 @@
+name: Schema Guard
+
+on:
+  pull_request:
+    branches:
+      - main
+      - develop
+
+permissions:
+  contents: read
+  id-token: write
+
+env:
+  SAFE_OUTPUTS: "add-comment,create-check-run"
+
+jobs:
+  schema-guard:
+    name: Schema and golden evaluation gates
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install uv
+        run: pip install uv
+
+      - name: Install backend dependencies
+        run: uv sync --project backend --all-extras
+
+      - name: Verify schema against data model
+        run: uv run --project backend pytest -q backend/tests/contract/test_schema_golden.py
+
+      - name: Run 50-case golden evaluation suite
+        run: uv run --project backend python backend/scripts/run_golden_evaluation.py
+
+      - name: Verify OIDC federation and zero static secrets
+        run: >-
+          uv run --project backend python .github/scripts/check_cloud_identity.py
+          --workflow .github/workflows/schema-guard.lock.yml
+          --trust-config .github/oidc-trust.json
