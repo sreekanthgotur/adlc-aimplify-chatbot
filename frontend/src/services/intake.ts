@@ -36,6 +36,13 @@ type FetchOptions = Parameters<typeof fetch>[1];
 
 const apiOrigin = import.meta.env.VITE_API_ORIGIN ?? '';
 
+export class IntakeRequestError extends Error {
+  constructor(message: string, readonly status: number) {
+    super(message);
+    this.name = 'IntakeRequestError';
+  }
+}
+
 async function request<T>(path: string, init?: FetchOptions): Promise<T> {
   const response = await fetch(`${apiOrigin}${path}`, {
     ...init,
@@ -43,7 +50,12 @@ async function request<T>(path: string, init?: FetchOptions): Promise<T> {
     headers: { ...(init?.headers ?? {}) },
   });
   const body = await response.json();
-  if (!response.ok) throw new Error(body?.error?.message ?? 'Request could not be processed.');
+  if (!response.ok) {
+    throw new IntakeRequestError(
+      body?.error?.message ?? 'Request could not be processed.',
+      response.status,
+    );
+  }
   return body as T;
 }
 

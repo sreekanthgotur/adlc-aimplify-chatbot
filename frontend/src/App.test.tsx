@@ -14,4 +14,16 @@ describe('App', () => {
     await screen.findByRole('textbox', { name: /message/i });
     expect(screen.getByRole('heading', { name: /tell us about your idea/i })).toBeInTheDocument();
   });
+
+  it('offers organization sign-in when the API requires authentication', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue(
+      new Response(JSON.stringify({
+        error: { code: 'UNAUTHENTICATED', message: 'Authentication is required.' },
+      }), { status: 401 }),
+    ));
+    render(<App />);
+
+    expect(await screen.findByRole('link', { name: /sign in with your organization/i }))
+      .toHaveAttribute('href', '/auth/login');
+  });
 });

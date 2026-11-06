@@ -30,7 +30,7 @@ checkout:
   fetch-depth: 50
 runtimes:
   python:
-    version: '3.11'
+    version: '3.12'
   uv:
     version: '0.11.0'
 steps:

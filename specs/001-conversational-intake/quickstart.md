@@ -1,19 +1,22 @@
 # Quickstart: AIMPLIFY Conversational Idea Intake
 
 This guide covers local setup and validation for the backend and frontend.
-Authenticated intake requires an identity verifier and extraction/transcription
-providers to be supplied by the deployment integration; the local entry point
-does not configure those providers. Tests inject deterministic local stubs.
+Production authentication supports single-tenant Microsoft Entra ID when its
+required environment variables are configured. Local development can opt into
+a loopback-only fixed identity with `AIMPLIFY_LOCAL_DEV=1`; this is not OIDC and
+must never be used in a deployed environment. Production uses Amazon Bedrock
+for text extraction and Amazon Transcribe streaming for audio; both require
+explicit AWS configuration and data-processing approval.
 
 ## Prerequisites
 
-- Python 3.11 or newer
+- Python 3.12 or newer
 - `uv`
 - Node.js compatible with Vite 6 and npm
 - PostgreSQL
-- OIDC development identity configuration; do not add static cloud credentials
-- Approved transcription/model provider configuration if running audio or AI
-  paths; provider retention must meet the project policy
+- Use local development authentication only on loopback; do not add static cloud credentials
+- Approved Bedrock and Transcribe data-processing settings before enabling
+  production AI or audio paths
 
 ## Start the backend
 
@@ -25,9 +28,10 @@ docker compose up -d postgres
 uv sync --project backend --all-extras
 $env:DATABASE_URL = "postgresql+psycopg://aimplify:change-me@localhost:5432/aimplify"
 $env:MAX_UPLOAD_BYTES = "20971520"
+$env:AIMPLIFY_LOCAL_DEV = "1"
 Push-Location backend
 uv run alembic upgrade head
-uv run uvicorn aimplify_intake.main:app --reload
+uv run uvicorn aimplify_intake.main:app --reload --reload-dir src
 Pop-Location
 ```
 
@@ -35,13 +39,15 @@ The API upload limit defaults to 20 MiB (`MAX_UPLOAD_BYTES=20971520`) and can be
 lowered or raised through environment configuration. Set the ingress limit no
 higher than the API limit. The example database password is for local development
 only. Keep real credentials out of command history, checked-in files, and logs.
+The local identity bypass is restricted to loopback traffic. Never expose this
+backend on a LAN or set `AIMPLIFY_LOCAL_DEV` in AWS.
 
 Expected result: the API starts, `GET /health/live` returns `{"status":"live"}`,
 and readiness reports available required dependencies. The repository has no
 reverse-proxy configuration; the local contract tests verify API streaming and
 parser behavior only. Follow [the ingress deployment gate](../../deploy/ingress/README.md)
-before deployment. The local entry point has no production OIDC verifier or AI
-providers configured, so authenticated user flows require deployment wiring.
+before deployment. For Entra and AWS production configuration, see
+[the AWS deployment preparation guide](../../deploy/aws/README.md).
 
 ## Start the frontend
 
@@ -92,7 +98,9 @@ and [the WebSocket contract](./contracts/websocket.md) for invariant details.
    Submitter Signature, or Date of Submission; verify no AI update is returned
    and persistence rejects an AI-origin write.
 5. **Audio and other documents**: exercise DOCX, PPTX, WAV, MP3, and WebM; verify
-   processing is memory-only and source/transcript buffers are released.
+   processing is memory-only and source/transcript buffers are released. In
+   production, FFmpeg converts audio through stdin/stdout pipes to Transcribe's
+   streaming PCM format; no S3 staging or temporary audio files are used.
 6. **Security and CI**: verify PII/token canaries do not appear in application,
    proxy, or WebSocket logs; validate OIDC-only cloud identity; fail the CI gate
    for one failing or omitted golden case.
@@ -102,10 +110,16 @@ and [the WebSocket contract](./contracts/websocket.md) for invariant details.
 - Configure and verify a no-disk ingress path, including proxy buffering,
   temporary storage, and proxy/access/WebSocket log handling. The repository
   currently contains no ingress implementation.
-- Select the approved transcription provider, if external, and verify no-retention
-  terms and OIDC federation.
-- Wire a production OIDC identity verifier and approved extraction/transcription
-  providers; the local ASGI entry point currently has none configured.
+- Set `AWS_REGION`, an available `BEDROCK_MODEL_ID`, and
+  `TRANSCRIBE_LANGUAGE_CODE` for the deployment. The container uses Python 3.12
+  and includes FFmpeg for in-memory audio conversion.
+- Before setting `BEDROCK_DATA_PROCESSING_APPROVED` or
+  `TRANSCRIBE_NO_RETENTION_APPROVED`, have the AWS and company administrators
+  verify model terms, service data handling, Bedrock invocation logging and
+  retention settings in the selected region. The code requires explicit
+  approval but cannot inspect account-level settings.
+- Verify the ECS task role is restricted to the selected Bedrock model and
+  Transcribe streaming action. Do not configure static AWS access keys.
 - Accepted structured values persist in PostgreSQL, but no retention duration or
   deletion schedule is configured. Approve and implement the accepted-data
   retention period, backup expiration, and deletion workflow before production.

@@ -8,6 +8,7 @@ import {
   getFieldState,
   IntakeFieldState,
   IntakeResult,
+  IntakeRequestError,
   HumanFieldUpdate,
   sendMessage,
   uploadSource,
@@ -25,7 +26,15 @@ export default function App() {
   const [fields, setFields] = useState<IntakeFieldState[]>([]);
   const [status, setStatus] = useState('Starting secure session');
   const [error, setError] = useState('');
+  const [authenticationRequired, setAuthenticationRequired] = useState(false);
   const [sendOverSocket, setSendOverSocket] = useState<((text: string) => Promise<IntakeResult>)>();
+
+  function showSignInForUnauthorized(cause: unknown): boolean {
+    if (!(cause instanceof IntakeRequestError) || cause.status !== 401) return false;
+    setAuthenticationRequired(true);
+    setError('Sign in with your organization account to continue.');
+    return true;
+  }
 
   useEffect(() => {
     let active = true;
@@ -47,9 +56,11 @@ export default function App() {
           }
         }
       })
-      .catch(() => {
+      .catch((cause: unknown) => {
         if (active) {
-          setError('Your session could not be opened. Please try again.');
+          if (!showSignInForUnauthorized(cause)) {
+            setError('Your session could not be opened. Please try again.');
+          }
           setStatus('Unavailable');
         }
       });
@@ -74,8 +85,10 @@ export default function App() {
         const safeResult = filterAiUpdates(result);
         applyResult(safeResult);
         return safeResult;
-      } catch {
-        setError('Your message could not be processed. Please try again.');
+      } catch (cause) {
+        if (!showSignInForUnauthorized(cause)) {
+          setError('Your message could not be processed. Please try again.');
+        }
         throw new Error('Message could not be processed.');
       }
     }
@@ -87,8 +100,10 @@ export default function App() {
     try {
       const result = await uploadSource(sessionId, file);
       applyResult(result);
-    } catch {
-      setError('This source could not be processed.');
+    } catch (cause) {
+      if (!showSignInForUnauthorized(cause)) {
+        setError('This source could not be processed.');
+      }
     }
   }
 
@@ -146,6 +161,11 @@ export default function App() {
           <IntakeChat onSend={handleMessage} disabled={!sessionId} />
           <SourcePicker disabled={!sessionId} onSelect={handleSource} />
           {error && <p className="error-message" role="alert">{error}</p>}
+          {authenticationRequired && (
+            <a className="sign-in-link" href="/auth/login">
+              Sign in with your organization
+            </a>
+          )}
           <p className="privacy-note"><span aria-hidden="true">*</span> Source files and conversation text are processed temporarily.</p>
         </section>
 

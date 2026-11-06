@@ -68,6 +68,7 @@ h1 { margin-bottom: 11px; font-family: Georgia, 'Times New Roman', serif; font-s
 .source-button:hover { background: var(--green-soft); }
 .source-picker input { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
 .error-message { margin: 12px 0 0; padding: 10px 12px; border-left: 3px solid var(--coral); background: #fff1ec; color: #88402e; font-size: 12px; }
+.sign-in-link { display: inline-block; margin-top: 12px; color: var(--green); font-size: 13px; font-weight: 700; }
 .privacy-note { margin: 14px 0 0; color: #77877e; font-size: 10px; }
 .privacy-note span { margin-right: 6px; color: var(--green); font-size: 8px; }
 .details-column { align-self: start; min-width: 0; margin-top: 12px; padding: 20px 20px 0; border-left: 1px solid #cbd6cc; }

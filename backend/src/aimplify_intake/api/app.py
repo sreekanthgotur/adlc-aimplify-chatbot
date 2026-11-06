@@ -21,6 +21,7 @@ from pydantic import BaseModel, Field
 from PyPDF2.errors import PdfReadError
 from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
+from starlette.concurrency import run_in_threadpool
 
 from aimplify_intake.api.http import create_human_fields_router
 from aimplify_intake.graph.intake_graph import create_intake_graph
@@ -36,6 +37,7 @@ from aimplify_intake.persistence.repositories import (
     read_field_state,
 )
 from aimplify_intake.schema.registry import load_canonical_schema
+from aimplify_intake.services.errors import ExtractionInputTooLarge, ProviderUnavailable
 from aimplify_intake.services.extraction import CandidateExtractor, extract_safe_candidates
 
 IdentityVerifier = Callable[[str], dict[str, Any]]
@@ -249,7 +251,22 @@ def create_app(
         subject = subject_for(request.cookies.get("oidc_session"))
         authorized_submission(session_id, subject)
         request_id = body.request_id or uuid4().hex
-        return process_text(session_id, body.text, request_id)
+        try:
+            return await run_in_threadpool(process_text, session_id, body.text, request_id)
+        except ProviderUnavailable:
+            return _generic_error(
+                "EXTRACTION_UNAVAILABLE",
+                "The source could not be processed.",
+                503,
+                request_id,
+            )
+        except ExtractionInputTooLarge:
+            return _generic_error(
+                "SOURCE_TOO_LARGE",
+                "The source exceeds the allowed size.",
+                413,
+                request_id,
+            )
 
     @app.post("/api/v1/sessions/{session_id}/sources/{media_type}")
     async def upload_source(session_id: str, media_type: str, request: Request) -> Any:
@@ -267,7 +284,16 @@ def create_app(
             return _generic_error("SOURCE_TOO_LARGE", "This source exceeds the allowed size.", 413)
         request_id = request.headers.get("x-request-id") or uuid4().hex
         try:
-            result = process_source(session_id, media_type, source, request_id)
+            result = await run_in_threadpool(
+                process_source, session_id, media_type, source, request_id
+            )
+        except ExtractionInputTooLarge:
+            return _generic_error(
+                "SOURCE_TOO_LARGE",
+                "The source exceeds the allowed size.",
+                413,
+                request_id,
+            )
         except RuntimeError:
             return _generic_error("SOURCE_PROCESSING_UNAVAILABLE", "This source could not be processed.", 503, request_id)
         except (
@@ -348,7 +374,16 @@ def create_app(
                         text = payload.get("text")
                         if not isinstance(text, str) or not text.strip() or len(text) > 20_000:
                             raise ValueError("Invalid message.")
-                        result = process_text(session_id, text, request_id)
+                        try:
+                            result = await run_in_threadpool(
+                                process_text, session_id, text, request_id
+                            )
+                        except ProviderUnavailable:
+                            await websocket.send_json({"type": "server.error", "request_id": request_id, "payload": {"code": "EXTRACTION_UNAVAILABLE", "message": "The source could not be processed."}})
+                            continue
+                        except ExtractionInputTooLarge:
+                            await websocket.send_json({"type": "server.error", "request_id": request_id, "payload": {"code": "SOURCE_TOO_LARGE", "message": "The source exceeds the allowed size."}})
+                            continue
                         events = _turn_events(result)
                         _cache_request(processed_requests, request_id, fingerprint, events)
                         await _send_events(websocket, events)
@@ -379,7 +414,12 @@ def create_app(
                         selected_type = active_source["media_type"]
                         active_source = None
                         try:
-                            result = process_source(session_id, selected_type, source, request_id)
+                            result = await run_in_threadpool(
+                                process_source, session_id, selected_type, source, request_id
+                            )
+                        except ExtractionInputTooLarge:
+                            await websocket.send_json({"type": "server.error", "request_id": request_id, "payload": {"code": "SOURCE_TOO_LARGE", "message": "The source exceeds the allowed size."}})
+                            continue
                         except RuntimeError:
                             await websocket.send_json({"type": "server.error", "request_id": request_id, "payload": {"code": "SOURCE_PROCESSING_UNAVAILABLE", "message": "This source could not be processed."}})
                             continue

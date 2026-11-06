@@ -20,7 +20,7 @@ text submission, and source-upload fallback.
 
 ## Technical Context
 
-**Language/Version**: Python 3.11+; TypeScript for the browser client
+**Language/Version**: Python 3.12+; TypeScript for the browser client
 
 **Primary Dependencies**: FastAPI, LangGraph, Pydantic, PostgreSQL, uv, React 19,
 Vite 6, Tailwind CSS, PyPDF2, python-docx, python-pptx

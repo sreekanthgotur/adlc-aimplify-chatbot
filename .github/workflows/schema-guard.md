@@ -16,7 +16,7 @@ safe-outputs: "add-comment,create-check-run"
 ## Scope
 
 Run this policy for pull requests targeting `main` or `develop`. The workflow
-must use Ubuntu and Python 3.11, and may read repository contents only. OIDC
+must use Ubuntu and Python 3.12, and may read repository contents only. OIDC
 token issuance is permitted solely for Cloud Identity Federation validation;
 the workflow must not receive production write permissions.
 
