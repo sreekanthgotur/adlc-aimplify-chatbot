@@ -18,7 +18,7 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from pptx.exc import PackageNotFoundError as PptxPackageNotFoundError
 from pydantic import BaseModel, Field
-from PyPDF2.errors import PdfReadError
+from pypdf.errors import PyPdfError
 from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -278,7 +278,7 @@ def create_app(
             BadZipFile,
             DocxPackageNotFoundError,
             PptxPackageNotFoundError,
-            PdfReadError,
+            PyPdfError,
         ):
             return _generic_error("SOURCE_INVALID", "This source could not be processed.", 400, request_id)
         return result
@@ -391,7 +391,7 @@ def create_app(
                             BadZipFile,
                             DocxPackageNotFoundError,
                             PptxPackageNotFoundError,
-                            PdfReadError,
+                            PyPdfError,
                         ):
                             await websocket.send_json({"type": "server.error", "request_id": request_id, "payload": {"code": "SOURCE_INVALID", "message": "This source could not be processed."}})
                             continue

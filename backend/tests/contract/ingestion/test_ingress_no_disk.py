@@ -9,7 +9,7 @@ from docx import Document
 from fastapi import Request
 from fastapi.testclient import TestClient
 from pptx import Presentation
-from PyPDF2 import PdfWriter
+from pypdf import PdfWriter
 
 import aimplify_intake.api.app as intake_app
 

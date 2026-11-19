@@ -1,7 +1,7 @@
 from io import BytesIO
 
 from fastapi.testclient import TestClient
-from PyPDF2 import PdfWriter
+from pypdf import PdfWriter
 
 from aimplify_intake.api.app import create_app
 

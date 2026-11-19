@@ -5,7 +5,7 @@ import pytest
 from docx import Document
 from fastapi.testclient import TestClient
 from pptx import Presentation
-from PyPDF2 import PdfWriter
+from pypdf import PdfWriter
 
 from aimplify_intake.api.app import create_app
 from aimplify_intake.ingestion.audio import transcribe_audio
